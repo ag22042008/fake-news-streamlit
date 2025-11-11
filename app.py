@@ -1,7 +1,27 @@
 import streamlit as st
 import joblib
 import re
+def set_background(image_file):
+    page_bg_img = f"""
+    <style>
+    [data-testid="stAppViewContainer"] {{
+        background-image: url("https://raw.githubusercontent.com/ag22042008/fake-news-streamlit/main/{image_file}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    [data-testid="stHeader"] {{
+        background: rgba(0,0,0,0);
+    }}
+    [data-testid="stSidebar"] {{
+        background-color: rgba(255,255,255,0.6);
+    }}
+    </style>
+    """
+    st.markdown(page_bg_img, unsafe_allow_html=True)
 
+
+set_background("bg.jpg") 
 # -----------------------
 # Load model and vectorizer
 # -----------------------
@@ -12,7 +32,7 @@ def load_model():
     return model, tfidf
 
 model, tfidf = load_model()
-st.image("bg.jpg", use_column_width=True)
+
 # -----------------------
 # Text cleaning function
 # -----------------------
@@ -45,4 +65,5 @@ if st.button("Check News"):
         st.success("✅ This looks like **REAL** news.")
     else:
         st.error("⚠️ This looks like **FAKE** news.")
+
 
