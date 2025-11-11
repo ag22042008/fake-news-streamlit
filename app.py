@@ -7,8 +7,8 @@ from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 
 # Load model and TF-IDF
-model = pickle.load(open("model.pkl", "rb"))
-tfidf = pickle.load(open("tfidf.pkl", "rb"))
+model = pickle.load(open("model.joblib", "rb"))
+tfidf = pickle.load(open("tfidf.joblib", "rb"))
 
 # Page configuration
 st.set_page_config(page_title="Fake News Detector 📰", page_icon="🗞️", layout="centered")
@@ -111,3 +111,4 @@ if st.button("🔍 Analyze"):
             st.error("❌ This appears to be **Fake News**.")
 
 st.markdown("</div>", unsafe_allow_html=True)
+
