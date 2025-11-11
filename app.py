@@ -12,7 +12,7 @@ def load_model():
     return model, tfidf
 
 model, tfidf = load_model()
-
+st.image("bg.jpg", use_column_width=True)
 # -----------------------
 # Text cleaning function
 # -----------------------
@@ -45,3 +45,4 @@ if st.button("Check News"):
         st.success("✅ This looks like **REAL** news.")
     else:
         st.error("⚠️ This looks like **FAKE** news.")
+
