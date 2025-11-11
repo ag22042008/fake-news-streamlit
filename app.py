@@ -9,7 +9,7 @@ def set_background(image_file):
         background-size: cover;
         background-repeat: no-repeat;
         background-attachment: fixed;
-        background-color:rgba(0,0,0,0.45);
+        background-color:rgba(0,0,0,0.25);
         background-blend-mode:darken;
     }}
     [data-testid="stHeader"] {{
@@ -67,5 +67,6 @@ if st.button("Check News"):
         st.success("✅ This looks like **REAL** news.")
     else:
         st.error("⚠️ This looks like **FAKE** news.")
+
 
 
