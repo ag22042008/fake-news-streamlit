@@ -1,15 +1,15 @@
-streamlit
-scikit-learn
-joblib
-numpy
-pandas
-nltk
-regex
-matplotlib
-seaborn
-pickle
-markdown-it-py
-mdurl
-rich
+streamlit==1.38.0
+scikit-learn==1.5.2
+pandas==2.2.2
+numpy==1.26.4
+nltk==3.9.1
+joblib==1.4.2
+matplotlib==3.9.2
+markdown-it-py==3.0.0
+mdurl==0.1.2
+rich==13.8.1
+regex==2024.5.15
+pyyaml==6.0
+
 
 
