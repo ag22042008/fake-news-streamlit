@@ -1,103 +1,76 @@
 import streamlit as st
-import pickle
-import re
-import string
+import joblib
 import nltk
+import re
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 
-# Load model and TF-IDF
-model = pickle.load(open("model.joblib", "rb"))
-tfidf = pickle.load(open("tfidf.joblib", "rb"))
+# ---------------------- #
+#   Load model and TF-IDF
+# ---------------------- #
+try:
+    model = joblib.load("model.joblib")
+    tfidf = joblib.load("tfidf.pkl")
+except Exception as e:
+    st.error(f"❌ Error loading model or TF-IDF: {e}")
+    st.stop()
 
-# Page configuration
-st.set_page_config(page_title="Fake News Detector 📰", page_icon="🗞️", layout="centered")
-
-# Download NLTK stopwords (if not already downloaded)
-nltk.download('stopwords')
-
+# ---------------------- #
+#   NLTK setup
+# ---------------------- #
+nltk.download('stopwords', quiet=True)
+STOPWORDS = set(stopwords.words('english'))
 ps = PorterStemmer()
 
-# Cleaning function
+# ---------------------- #
+#   Text cleaning function
+# ---------------------- #
 def clean_text(text):
     text = str(text).lower()
-    text = re.sub(r'http\S+|www.\S+', '', text)
-    text = re.sub(r'[^a-zA-Z]', ' ', text)
-    text = text.translate(str.maketrans('', '', string.punctuation))
-    text = text.split()
-    text = [ps.stem(word) for word in text if word not in stopwords.words('english')]
-    return " ".join(text)
+    text = re.sub(r'[^a-zA-Z\s]', '', text)  # remove punctuation, numbers, symbols
+    words = text.split()
+    words = [ps.stem(word) for word in words if word not in STOPWORDS]
+    return ' '.join(words)
 
-# 🎨 Custom CSS styling
-st.markdown("""
+# ---------------------- #
+#   Streamlit page setup
+# ---------------------- #
+st.set_page_config(page_title="📰 Fake News Detection", page_icon="🧠", layout="centered")
+
+# Add background styling
+st.markdown(
+    """
     <style>
-    /* Background */
-    .stApp {
-        background-image: url('https://images.unsplash.com/photo-1525182008055-f88b95ff7980');
+    [data-testid="stAppViewContainer"] {
+        background-image: url("https://images.unsplash.com/photo-1522199710521-72d69614c702?fit=crop&w=1200&q=80");
         background-size: cover;
-        background-attachment: fixed;
         background-position: center;
     }
-
-    /* Card container */
-    .main {
-        background-color: rgba(255, 255, 255, 0.88);
-        border-radius: 20px;
-        padding: 2rem 2.5rem;
-        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
-        margin-top: 3rem;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
+    [data-testid="stHeader"] {
+        background: rgba(0,0,0,0);
     }
-
-    /* Headings */
-    h1, h2, h3 {
-        color: #222;
-        text-align: center;
-        font-family: 'Poppins', sans-serif;
-        font-weight: 600;
+    .stApp {
+        background-color: rgba(255, 255, 255, 0.85);
+        border-radius: 15px;
+        padding: 20px;
     }
-
-    /* Buttons */
-    div.stButton > button {
-        background-color: #0078FF;
-        color: white;
-        border-radius: 12px;
-        height: 3rem;
-        width: 100%;
-        font-size: 1rem;
-        font-weight: 600;
-        border: none;
-        transition: 0.3s ease;
-    }
-    div.stButton > button:hover {
-        background-color: #005FCC;
-        transform: scale(1.03);
-    }
-
-    /* Text area */
-    textarea {
-        border-radius: 10px !important;
-        border: 2px solid #0078FF !important;
-        background-color: #f9f9f9 !important;
-    }
-
-    /* Hide footer */
-    footer {visibility: hidden;}
     </style>
-""", unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)
 
-# 🌐 Main content
-st.markdown("<div class='main'>", unsafe_allow_html=True)
+# ---------------------- #
+#   App title
+# ---------------------- #
+st.title("🧠 Fake News Detection App")
+st.write("Enter a news headline or short article below to check if it's **Fake** or **Real**.")
 
-st.title("📰 Fake News Detection App")
-st.subheader("Check if a news headline or article is Real or Fake")
+# ---------------------- #
+#   Input field
+# ---------------------- #
+user_input = st.text_area("📝 Enter News Text:", height=200, placeholder="Type your news article here...")
 
-# User input
-user_input = st.text_area("Enter News Text Below:", height=150)
-
-if st.button("🔍 Analyze"):
+if st.button("🔍 Predict"):
     if user_input.strip() == "":
         st.warning("⚠️ Please enter some text to analyze.")
     else:
@@ -105,10 +78,17 @@ if st.button("🔍 Analyze"):
         vector_input = tfidf.transform([cleaned])
         prediction = model.predict(vector_input)[0]
 
+        # Display result
         if prediction == 1:
-            st.success("✅ This looks like **Real News**.")
+            st.success("✅ The news appears to be **REAL**.")
         else:
-            st.error("❌ This appears to be **Fake News**.")
+            st.error("🚨 The news appears to be **FAKE**.")
 
-st.markdown("</div>", unsafe_allow_html=True)
-
+# ---------------------- #
+#   Footer
+# ---------------------- #
+st.markdown("---")
+st.markdown(
+    "<p style='text-align:center; color:gray;'>Developed by TEAM ⚡</p>",
+    unsafe_allow_html=True
+)
