@@ -9,6 +9,8 @@ def set_background(image_file):
         background-size: cover;
         background-repeat: no-repeat;
         background-attachment: fixed;
+        background-color:rgba(0,0,0,0.45);
+        background-blend-mode:darken;
     }}
     [data-testid="stHeader"] {{
         background: rgba(0,0,0,0);
