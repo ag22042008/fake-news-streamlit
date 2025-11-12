@@ -10,7 +10,7 @@ import os
 # ---------------------- #
 try:
     model = joblib.load("model.joblib")
-    tfidf = joblib.load("tfidf.pkl")
+    tfidf = joblib.load("tfidf.joblib")
 except Exception as e:
     st.error(f"❌ Error loading model or TF-IDF: {e}")
     st.stop()
@@ -105,4 +105,5 @@ if st.button("🔍 Predict"):
 # ---------------------- #
 st.markdown("---")
 st.markdown("<p style='text-align:center; color:gray;'>Developed by Aditya Gupta ⚡</p>", unsafe_allow_html=True)
+
 
