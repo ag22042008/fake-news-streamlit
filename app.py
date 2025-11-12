@@ -1,39 +1,29 @@
 import streamlit as st
 import joblib
-import nltk
 import re
-from nltk.corpus import stopwords
-import os
 
-# ---------------------- #
-#   Load model and TF-IDF
-# ---------------------- #
-try:
+# -----------------------
+# Load model and vectorizer
+# -----------------------
+@st.cache_resource
+def load_model():
     model = joblib.load("model.joblib")
     tfidf = joblib.load("tfidf.joblib")
-except Exception as e:
-    st.error(f"❌ Error loading model or TF-IDF: {e}")
-    st.stop()
+    return model, tfidf
 
-# ---------------------- #
-#   NLTK setup
-# ---------------------- #
-nltk.download('stopwords', quiet=True)
-STOPWORDS = set(stopwords.words('english'))
+model, tfidf = load_model()
 
-# ---------------------- #
-#   Text cleaning function (no stemming)
-# ---------------------- #
+# -----------------------
+# Text cleaning function
+# -----------------------
 def clean_text(text):
-    # convert to string and lowercase
     text = str(text).lower()
-    # remove punctuation and numbers (keep spaces and letters)
-    text = re.sub(r'[^a-z\s]', ' ', text)
-    # collapse multiple spaces
+    text = re.sub(r'http\S+', '', text)
+    text = re.sub(r'\d+', '', text)
+    text = re.sub(r'[^\w\s]', '', text)
     text = re.sub(r'\s+', ' ', text).strip()
-    # remove stopwords
-    words = [w for w in text.split() if w not in STOPWORDS]
-    return ' '.join(words)
+    return text
+
 
 # ---------------------- #
 #   Streamlit page setup
@@ -105,6 +95,7 @@ if st.button("🔍 Predict"):
 # ---------------------- #
 st.markdown("---")
 st.markdown("<p style='text-align:center; color:gray;'>Developed by Aditya Gupta ⚡</p>", unsafe_allow_html=True)
+
 
 
 
