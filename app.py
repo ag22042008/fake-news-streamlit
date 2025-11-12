@@ -45,7 +45,7 @@ st.markdown(
     """
     <style>
     [data-testid="stAppViewContainer"] {
-        background-image: url("https://images.unsplash.com/photo-1522199710521-72d69614c702?fit=crop&w=1200&q=80");
+        background-image: url("bg.jpg");
         background-size: cover;
         background-position: center;
     }
@@ -105,5 +105,6 @@ if st.button("🔍 Predict"):
 # ---------------------- #
 st.markdown("---")
 st.markdown("<p style='text-align:center; color:gray;'>Developed by Aditya Gupta ⚡</p>", unsafe_allow_html=True)
+
 
 
